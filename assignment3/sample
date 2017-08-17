@@ -1,0 +1,181 @@
+//
+//  ViewController.swift
+//  Color view
+//
+//  Created by Padmapriya Trishul on 10/5/15.
+//  Copyright © 2015 Padmapriya Trishul. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController,UITextFieldDelegate {
+    
+    @IBOutlet weak var redText: UITextField!
+    @IBOutlet weak var greenText: UITextField!
+    @IBOutlet weak var blueText: UITextField!
+    @IBOutlet weak var colorView: UIView!
+ 
+    @IBOutlet weak var redSlider: UISlider!
+    
+    @IBOutlet weak var greenSlider: UISlider!
+    
+    @IBOutlet weak var blueSlider: UISlider!
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        redText.delegate = self;
+        greenText.delegate = self;
+        blueText.delegate = self;
+        redText.keyboardType = .NumberPad;
+        greenText.keyboardType = .NumberPad;
+        blueText.keyboardType = .NumberPad;
+        
+        let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        
+        if (defaults.valueForKey("green") as? Double) != nil && (defaults.valueForKey("red") as? Double) !=
+        nil && (defaults.valueForKey("blue") as? Double) != nil
+        
+        {
+        let greenTemp = Int((defaults.valueForKey("green") as? Double)! * 100.0)
+        
+        greenText.text = String(greenTemp)
+        greenSlider.value = Float(greenTemp)
+            
+            
+        let redTemp = Int((defaults.valueForKey("red") as? Double)! * 100.0)
+        
+        redText.text = String(redTemp)
+        redSlider.value = Float(redTemp)
+            
+            
+        let blueTemp = Int((defaults.valueForKey("blue") as? Double)! * 100.0)
+        
+        blueText.text = String(blueTemp)
+        blueSlider.value = Float(blueTemp)
+            
+            colorBUtton()
+            
+        }
+        
+        /*if greenText.text != "" && redText.text != "" && blueText.text != ""
+        {
+            
+        colorBUtton()
+            
+        }*/
+        
+       
+    }
+
+ 
+       @IBAction func colorBUtton() {
+        
+        var green = 0.0
+        
+        var red = 0.0
+        
+        var blue = 0.0
+        
+        if let greenval = NSNumberFormatter().numberFromString(greenText.text!) {
+             green = Double(greenval)/100.0;
+            greenSlider.value = Float(greenval)
+            
+            
+        }
+        if let redval = NSNumberFormatter().numberFromString(redText.text!) {
+             red = Double(redval)/100.0;
+            redSlider.value = Float(redval)
+           
+            
+        }
+        if let blueval = NSNumberFormatter().numberFromString(blueText.text!) {
+             blue = Double(blueval)/100.0;
+            blueSlider.value = Float(blueval)
+           
+                    }
+        
+        
+        
+        colorView.backgroundColor = UIColor(red: CGFloat(red) , green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
+        
+        self.view.endEditing(true)
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setDouble(green, forKey: "green")
+        defaults.setDouble(red, forKey: "red")
+        defaults.setDouble(blue, forKey: "blue")
+        defaults.synchronize()
+        
+        //colorView.backgroundColor = UIColor(red: 1 , green: 1, blue: 1, alpha: 1)
+        
+    }
+  
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+
+
+    @IBAction func redValueChanged(sender: UISlider) {
+        
+        
+        redText.text = String(Int(sender.value));
+        colorBUtton()
+    }
+  
+    @IBAction func greenValueChanged(sender: UISlider) {
+        
+        greenText.text = String(Int(sender.value));
+        colorBUtton()
+        
+    }
+
+    @IBAction func blueValueChanged(sender: UISlider) {
+        
+        blueText.text = String(Int(sender.value));
+        colorBUtton()
+        
+        
+    }
+  /*  @IBAction func redValueChanged(sender: UISlider) {
+        
+        redText.text = String(Int(sender.value));
+        colorBUtton()
+    
+    
+    @IBAction func greenValueChanged(sender: UISlider) {
+        
+       greenText.text = String(Int(sender.value));
+        colorBUtton()
+    }
+    
+    @IBAction func blueValueChanged(sender: UISlider) {
+        
+        blueText.text = String(Int(sender.value));
+        colorBUtton()
+        
+    }*/
+    
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString text: String) -> Bool {
+        
+        let NumberSet = NSCharacterSet(charactersInString:"0123456789").invertedSet
+        let checkText = text.componentsSeparatedByCharactersInSet(NumberSet)
+        let filtered = checkText.joinWithSeparator("")
+        return text == filtered
+        
+    }
+}
+
